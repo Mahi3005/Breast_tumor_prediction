@@ -2,8 +2,7 @@ import streamlit as st
 import numpy as np
 import joblib
 from sklearn.preprocessing import StandardScaler
-
-
+import joblib
 
 # Load the model and scaler
 @st.cache_resource
@@ -44,7 +43,6 @@ def map_answers_to_features(answers):
     ]
 
 # Function to make predictions
-# Function to make predictions
 def predict_tumor(user_answers):
     if model is None or scaler is None:
         return "Model or scaler not loaded. Unable to make predictions.", 0
@@ -74,7 +72,6 @@ def predict_tumor(user_answers):
     except Exception as e:
         return str(e), 0
 
-
 # Test cases
 test_cases = {
     "Likely Benign": {
@@ -102,16 +99,9 @@ test_cases = {
         'symmetry_error': 0.015, 'fractal_dimension_error': 0.004
     }
 }
-from flask_cors import CORS
+
 # Streamlit app
 st.title('Breast Cancer Risk Assessment Tool')
-
-
-
-
-app = st.legacy_create_server()
-CORS(app)
-
 
 st.write("""
 This tool uses detailed tumor characteristics to assess the potential risk of breast cancer. 
@@ -144,35 +134,28 @@ if input_method == "Manual Input":
     fractal_dimension_error = st.slider('Fractal Dimension Error', 0.001, 0.02, 0.005, 0.001)
 
     user_answers = {
-        'tumor_size': tumor_size,
-        'tumor_texture': tumor_texture,
-        'tumor_smoothness': tumor_smoothness,
-        'tumor_density': tumor_density,
-        'tumor_irregularity': tumor_irregularity,
-        'tumor_symmetry': tumor_symmetry,
-        'fractal_dimension': fractal_dimension,
-        'radius_error': radius_error,
-        'texture_error': texture_error,
-        'perimeter_error': perimeter_error,
-        'area_error': area_error,
-        'smoothness_error': smoothness_error,
-        'compactness_error': compactness_error,
-        'concavity_error': concavity_error,
-        'concave_points_error': concave_points_error,
-        'symmetry_error': symmetry_error,
+        'tumor_size': tumor_size, 'tumor_texture': tumor_texture,
+        'tumor_smoothness': tumor_smoothness, 'tumor_density': tumor_density,
+        'tumor_irregularity': tumor_irregularity, 'tumor_symmetry': tumor_symmetry,
+        'fractal_dimension': fractal_dimension, 'radius_error': radius_error,
+        'texture_error': texture_error, 'perimeter_error': perimeter_error,
+        'area_error': area_error, 'smoothness_error': smoothness_error,
+        'compactness_error': compactness_error, 'concavity_error': concavity_error,
+        'concave_points_error': concave_points_error, 'symmetry_error': symmetry_error,
         'fractal_dimension_error': fractal_dimension_error
     }
 
-    if st.button('Predict'):
+    if st.button("Predict"):
         result, confidence = predict_tumor(user_answers)
-        st.subheader(f'Prediction Result: {result}')
-        st.write(f'Confidence: {confidence:.2f}%')
+        st.write(result)
+        st.write(f"Confidence: {confidence:.2f}%")
 
 elif input_method == "Test Cases":
     selected_case = st.selectbox("Choose a test case", list(test_cases.keys()))
-    st.write(f"Selected test case: {selected_case}")
+    user_answers = test_cases[selected_case]
 
-    if st.button('Predict Test Case'):
-        result, confidence = predict_tumor(test_cases[selected_case])
-        st.subheader(f'Prediction Result: {result}')
-        st.write(f'Confidence: {confidence:.2f}%')
+    if st.button("Predict"):
+        result, confidence = predict_tumor(user_answers)
+        st.write(f"Test Case: {selected_case}")
+        st.write(result)
+        st.write(f"Confidence: {confidence:.2f}%")
